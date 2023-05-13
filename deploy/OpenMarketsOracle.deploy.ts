@@ -1,4 +1,3 @@
-import { deployments, getNamedAccounts } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 
@@ -9,12 +8,24 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     );
   }
 
+  const { deployments, getNamedAccounts } = hre;
   const { deploy } = deployments;
-  const { deployer } = await getNamedAccounts();
-
+  const { deployer, proxyAdminOwner } = await getNamedAccounts();
+  
   await deploy("OpenMarketsOracle", {
     from: deployer,
-    log: hre.network.name !== "hardhat"
+    log: hre.network.name !== "hardhat",
+    contract: "OpenMarketsOracle",
+    proxy: {
+      owner: proxyAdminOwner,
+      proxyContract: "UUPS",
+      execute: {
+        init: {
+          methodName: "initialize",
+          args: [],
+        },
+      },
+    },
   });
 };
 

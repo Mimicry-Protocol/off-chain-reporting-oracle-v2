@@ -7,7 +7,7 @@
   "scripts": {
     "build": "yarn clean && yarn install && yarn compile && npx tsc",
     "compile": "npx hardhat compile --force",
-    "clean": "rm -rf dist && rm -rf typechain && rm -rf deployments",
+    "clean": "rm -rf dist && rm -rf typechain",
     "deploy": "npx hardhat deploy",
     "format": "prettier --write */**/*.*{js,sol,json,md,ts}",
     "format:check": "prettier --check */**/*.*{js,sol,json,md,ts}",

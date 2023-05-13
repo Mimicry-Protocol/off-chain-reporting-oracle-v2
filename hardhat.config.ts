@@ -28,7 +28,7 @@ const config: HardhatUserConfig = {
   w3f: {
     rootDir: "./web3-functions",
     debug: false,
-    networks: ["mumbai", "goerli", "baseGoerli"], //(multiChainProvider) injects provider for these networks
+    networks: ["mumbai", "polygon"], //(multiChainProvider) injects provider for these networks
   },
 
   namedAccounts: {
@@ -42,8 +42,8 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://eth-goerli.g.alchemy.com/v2/${ALCHEMY_ID}`,
-        blockNumber: 8664000,
+        url: `https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_ID}`,
+        blockNumber: 35532349,
       },
     },
 
@@ -85,7 +85,7 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       chainId: 137,
-      url: "https://rpc-mainnet.maticvigil.com",
+      url: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_ID}`,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
     },
 

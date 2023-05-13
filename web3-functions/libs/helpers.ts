@@ -196,10 +196,7 @@ export function reachConsensus(
  */
 export function getAbiEncodedParams(userArgs: any): string {
   const abiCoder = ethers.utils.defaultAbiCoder;
-  const encodedData = abiCoder.encode(
-      [ 'string' ], 
-      [ JSON.stringify(userArgs) ]
-  );
+  const encodedData = abiCoder.encode(["string"], [JSON.stringify(userArgs)]);
   return encodedData;
 }
 

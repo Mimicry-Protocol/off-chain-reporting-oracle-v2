@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.8.9;
+pragma solidity ^0.8.17;
 
 import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -22,13 +22,14 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
     struct DataFeed {
         address owner;
         string nickname;
+        bytes32 rulesHash;
         Value[] values;
-        mapping(address => bool) scribes;
     }
 
     struct DataFeedInfo {
         uint256 id;
         string nickname;
+        bytes32 rulesHash;
         Value latestValue;
     }
 
@@ -44,15 +45,9 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
 
     /* EVENTS */
 
-    event DataFeedCreated(uint256 dataFeedId, string nickname, address owner);
-
-    event ScribeAdded(uint256 dataFeedId, address scribe);
-
-    event ScribeRemoved(uint256 dataFeedId, address scribe);
+    event DataFeedCreated(uint256 dataFeedId, string nickname, bytes32 rulesHash, address owner);
 
     event SubscriberAdded(address subscriber, uint256 dataFeedId);
-
-    event NicknameUpdated(uint256 dataFeedId, string nickname);
 
     event ValueUpdated(uint256 dataFeedId, uint256 newValue);
 
@@ -66,17 +61,11 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
 
     error OnlyDataFeedOwner();
 
-    error OnlyScribes();
-
     error NoZeroAddress();
 
     error DataFeedCreatorExists();
 
     error DataFeedCreatorNotFound();
-
-    error ScribeExists();
-
-    error ScribeNotFound();
 
     error SubscriberNotFound();
 
@@ -99,16 +88,6 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         _;
     }
 
-    modifier onlyScribes(uint256 _dataFeedId) {
-        if (
-            msg.sender != dataFeeds[_dataFeedId].owner &&
-            !dataFeeds[_dataFeedId].scribes[msg.sender]
-        ) {
-            revert OnlyScribes();
-        }
-        _;
-    }
-
     /* FUNCTIONS */
 
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -123,8 +102,8 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
     }
 
     function createDataFeed(
-        string memory _nickname,
-        address[] memory _allowedScribes
+        string calldata _nickname,
+        bytes32 _rulesHash
     ) external {
         if (msg.sender != owner() && !dataFeedCreators[msg.sender]) {
             revert InvalidDataFeedCreator();
@@ -133,12 +112,9 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         uint256 dataFeedId = nextDataFeedId++;
         dataFeeds[dataFeedId].owner = msg.sender;
         dataFeeds[dataFeedId].nickname = _nickname;
+        dataFeeds[dataFeedId].rulesHash = _rulesHash;
 
-        for (uint256 i = 0; i < _allowedScribes.length; i++) {
-            dataFeeds[dataFeedId].scribes[_allowedScribes[i]] = true;
-        }
-
-        emit DataFeedCreated(dataFeedId, _nickname, msg.sender);
+        emit DataFeedCreated(dataFeedId, _nickname, _rulesHash, msg.sender);
     }
 
     function addDataFeedCreator(address _newCreator) external onlyOwner {
@@ -171,32 +147,14 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         emit DataFeedCreatorRemoved(_creatorToRemove);
     }
 
-    function addScribe(
+    function updateValue(
         uint256 _dataFeedId,
-        address _newScrbe
+        uint256 _value
     ) external onlyDataFeedOwner(_dataFeedId) {
-        if (_newScrbe == address(0)) {
-            revert NoZeroAddress();
-        }
+        // solhint-disable-next-line not-rely-on-time
+        dataFeeds[_dataFeedId].values.push(Value(_value, block.timestamp));
 
-        if (dataFeeds[_dataFeedId].scribes[_newScrbe]) {
-            revert ScribeExists();
-        }
-
-        dataFeeds[_dataFeedId].scribes[_newScrbe] = true;
-        emit ScribeAdded(_dataFeedId, _newScrbe);
-    }
-
-    function removeScribe(
-        uint256 _dataFeedId,
-        address _scribeToRemove
-    ) external onlyDataFeedOwner(_dataFeedId) {
-        if (!dataFeeds[_dataFeedId].scribes[_scribeToRemove]) {
-            revert ScribeNotFound();
-        }
-
-        delete dataFeeds[_dataFeedId].scribes[_scribeToRemove];
-        emit ScribeRemoved(_dataFeedId, _scribeToRemove);
+        emit ValueUpdated(_dataFeedId, _value);
     }
 
     function registerDataFeedSubscriber(
@@ -222,25 +180,7 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         emit SubscriberAdded(_subscriber, _dataFeedId);
     }
 
-    function updateDataFeedNickname(
-        uint256 _dataFeedId,
-        string memory _newNickname
-    ) external onlyDataFeedOwner(_dataFeedId) {
-        dataFeeds[_dataFeedId].nickname = _newNickname;
-
-        emit NicknameUpdated(_dataFeedId, _newNickname);
-    }
-
-    function updateValue(
-        uint256 _dataFeedId,
-        uint256 _value
-    ) external onlyScribes(_dataFeedId) {
-        // solhint-disable-next-line not-rely-on-time
-        dataFeeds[_dataFeedId].values.push(Value(_value, block.timestamp));
-
-        emit ValueUpdated(_dataFeedId, _value);
-    }
-
+    // Only useful for registered Data Feed Subscribers
     function getIndexValue() external view returns (uint256) {
         uint256 dataFeedId = subscriberRegistry[msg.sender];
 
@@ -338,6 +278,40 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         return valuesList;
     }
 
+    function getDataFeedInfo(
+        uint256 _dataFeedId
+    ) public view returns (DataFeedInfo memory) {
+        if (dataFeeds[_dataFeedId].owner == address(0)) {
+            revert DataFeedNotFound();
+        }
+
+        return
+            DataFeedInfo(
+                _dataFeedId,
+                dataFeeds[_dataFeedId].nickname,
+                dataFeeds[_dataFeedId].rulesHash,
+                getLatestValue(_dataFeedId)
+            );
+    }
+
+    function getDataFeedInfoByHash(
+        bytes32 _rulesHash
+    ) external view returns (DataFeedInfo memory) {
+        // loop through every data feed
+        // if the owner and rulesHash match, return the data feed info
+        // if no match, revert
+        for (uint256 i = 1; i < nextDataFeedId; i++) {
+            if (
+                dataFeeds[i].owner == msg.sender &&
+                dataFeeds[i].rulesHash == _rulesHash
+            ) {
+                return getDataFeedInfo(i);
+            }
+        }
+
+        revert DataFeedNotFound();
+    }
+
     function getDataFeeds() external view returns (DataFeedInfo[] memory) {
         return getDataFeeds(1000, 0);
     }
@@ -369,46 +343,10 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
         for (uint256 i = 0; i < resultCount; i++) {
             uint256 dataFeedIndex = _offset + i + 1;
 
-            dataFeedList[i] = DataFeedInfo(
-                dataFeedIndex,
-                dataFeeds[dataFeedIndex].nickname,
-                getLatestValue(dataFeedIndex)
-            );
+            dataFeedList[i] = getDataFeedInfo(dataFeedIndex);
         }
 
         return dataFeedList;
-    }
-
-    function getDataFeedInfo(
-        uint256 _dataFeedId
-    ) external view returns (DataFeedInfo memory) {
-        if (dataFeeds[_dataFeedId].owner == address(0)) {
-            revert DataFeedNotFound();
-        }
-
-        return
-            DataFeedInfo(
-                _dataFeedId,
-                dataFeeds[_dataFeedId].nickname,
-                getLatestValue(_dataFeedId)
-            );
-    }
-
-    function isDataFeedScribe(
-        uint256 _dataFeedId,
-        address _maybeScribe
-    ) external view returns (bool) {
-        if (dataFeeds[_dataFeedId].owner == address(0)) {
-            revert DataFeedNotFound();
-        }
-
-        return dataFeeds[_dataFeedId].scribes[_maybeScribe];
-    }
-
-    function getDataFeedNickname(
-        uint256 _dataFeedId
-    ) external view returns (string memory) {
-        return dataFeeds[_dataFeedId].nickname;
     }
 
     function getLatestValue(

@@ -11,12 +11,10 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  const opsProxyFactory = "0x44bde1bccdD06119262f1fE441FBe7341EaaC185";
 
   await deploy("OpenMarketsOracle", {
     from: deployer,
-    log: hre.network.name !== "hardhat",
-    args: [opsProxyFactory],
+    log: hre.network.name !== "hardhat"
   });
 };
 

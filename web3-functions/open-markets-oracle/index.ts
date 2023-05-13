@@ -26,7 +26,7 @@ import {
   tokenRunner,
   reachConsensus,
 } from "../libs/helpers";
-import { OpenMarketsOracle__factory } from "../../typechain-types";
+import { OpenMarketsOracle__factory } from "../../typechain";
 
 Web3Function.onRun(async (context: Web3FunctionContext) => {
   try {
@@ -196,7 +196,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
         },
       ],
     };
-  } catch (err) {
+  } catch (err: any) {
     return { canExec: false, message: err.message };
   }
 });

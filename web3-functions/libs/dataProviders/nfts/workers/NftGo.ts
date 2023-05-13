@@ -44,7 +44,7 @@ export class NftGo extends RestfulProvider implements NftCollectionDataProvider 
             + '/' + address
             + '/metrics';
     
-        let collection;
+        let collection: any;
         try {
             console.log(`Fetching ${url}`)
             collection = await ky.create({

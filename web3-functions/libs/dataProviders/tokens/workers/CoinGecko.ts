@@ -49,14 +49,14 @@ export class CoinGecko extends RestfulProvider implements TokenDataProvider {
                 include_last_updated_at: 'false'
             });
 
-        let token;
+        let token: any;
         try {
             token = await ky.create({
                 headers: {
                     'x-cg-pro-api-key': this.config.key
                 }
             }).get(url, { timeout: 5_000, retry: 0 }).json();
-        } catch (err) {
+        } catch (err: any) {
             throw new Error(err);
         }
 

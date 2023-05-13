@@ -40,7 +40,7 @@ export class Center extends RestfulProvider implements NftCollectionDataProvider
             + '/market-data'
             + '/' + _metric;
     
-        let collection;
+        let collection: any;
         try {
             collection = await ky.create({
                 headers: {

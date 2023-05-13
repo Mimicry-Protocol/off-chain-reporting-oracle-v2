@@ -86,7 +86,7 @@ export async function nftCollectionRunner(
   currency: Currency,
   metric: Metric
 ): Promise<BigNumber> {
-  let providerClass;
+  let providerClass: any;
   if (provider === Provider.NFTGO) {
     providerClass = new NftGo(apiKey);
   } else if (provider === Provider.CENTER) {
@@ -109,7 +109,7 @@ export async function nftCollectionRunner(
 
   const throttle = pThrottle(providerClass.getThrottleConfig());
   const promises: Promise<BigNumber>[] = nftCollections.map(
-    throttle(async (nftCollection) => {
+    throttle(async (nftCollection: any) => {
       const { chain, address } = nftCollection;
       const nftCollectionInfo: NftCollectionInfo = {
         address,
@@ -133,7 +133,7 @@ export async function tokenRunner(
   tokens: ContractPointer[],
   currency: Currency
 ): Promise<BigNumber> {
-  let providerClass;
+  let providerClass: any;
   if (provider === Provider.COINGECKO) {
     providerClass = new CoinGecko(apiKey);
   } else {
@@ -147,7 +147,7 @@ export async function tokenRunner(
 
   const throttle = pThrottle(providerClass.getThrottleConfig());
   const promises: Promise<BigNumber>[] = tokens.map(
-    throttle(async (token) => {
+    throttle(async (token: any) => {
       const { chain, address } = token;
       const tokenInfo: TokenInfo = { address, chain, currency };
       return await providerClass.getMarketCap(tokenInfo);

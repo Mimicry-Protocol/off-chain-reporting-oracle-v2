@@ -62,7 +62,7 @@ export function mad(values: Array<BigNumber>): Array<BigNumber> {
  * @returns A filtered list of BigNumbers
  */
 export function majority(values: Array<BigNumber>): Array<BigNumber> {
-  const majority = values.reduce((acc, curr) => {
+  const majority = values.reduce((acc: any, curr) => {
     acc[curr.toString()] = (acc[curr.toString()] || 0) + 1;
     return acc;
   }, {});

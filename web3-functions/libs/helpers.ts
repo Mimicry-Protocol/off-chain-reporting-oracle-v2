@@ -17,7 +17,7 @@ import * as ConsensusMethods from "./consensusMethods";
 import { NftGo } from "./dataProviders/nfts/workers/NftGo";
 import { Center } from "./dataProviders/nfts/workers/Center";
 import { CoinGecko } from "./dataProviders/tokens/workers/CoinGecko";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import pThrottle from "p-throttle";
 
 export function unwrapContractPointers(
@@ -187,4 +187,28 @@ export function reachConsensus(
 
   values = ConsensusFilters[filter](values);
   return ConsensusMethods[method](values);
+}
+
+/**
+ * Return ABI Encoded schema params
+ * @param userArgs A data object
+ * @returns string
+ */
+export function getAbiEncodedParams(userArgs: any): string {
+  const abiCoder = ethers.utils.defaultAbiCoder;
+  const encodedData = abiCoder.encode(
+      [ 'string' ], 
+      [ JSON.stringify(userArgs) ]
+  );
+  return encodedData;
+}
+
+/**
+ * Return Keccak256 hash of a string
+ * @param str A string
+ * @returns string
+ * @see https://docs.ethers.io/v5/api/utils/hashing/#utils-keccak256
+ */
+export function getKeccak256Hash(str: string): string {
+  return ethers.utils.keccak256(str);
 }

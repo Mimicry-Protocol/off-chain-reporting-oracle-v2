@@ -10,14 +10,14 @@ const func: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
   const { deployments, getNamedAccounts } = hre;
   const { deploy } = deployments;
-  const { deployer, proxyAdminOwner } = await getNamedAccounts();
+  const { deployer } = await getNamedAccounts();
   
   await deploy("OpenMarketsOracle", {
     from: deployer,
     log: hre.network.name !== "hardhat",
     contract: "OpenMarketsOracle",
     proxy: {
-      owner: proxyAdminOwner,
+      owner: deployer,
       proxyContract: "UUPS",
       execute: {
         init: {

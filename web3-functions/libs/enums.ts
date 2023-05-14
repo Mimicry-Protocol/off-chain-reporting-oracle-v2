@@ -34,8 +34,10 @@ export enum Metric {
 }
 
 export enum OpenMarketsOracleAddress {
-  MUMBAI = "0x1C60320EF9aeD1ad1edf25afD82596167832F557", // Mumbai OMO
-  POLYGON = "0x454F9C0ab3119f8B9209B52A3f0191268e2b8812", // Polygon OMO
+  // MUMBAI = "0x1C60320EF9aeD1ad1edf25afD82596167832F557", // Old Mumbai OMO
+  // POLYGON = "0x454F9C0ab3119f8B9209B52A3f0191268e2b8812", // Old Polygon OMO
+  MUMBAI = "0x0aC47a0aBf3f96df1E5A3F31Ea475ad99f2D9A31",
+  POLYGON = "0xe8a5e9c9347a6b2EED112b76C257948F9Df18072",
 }
 
 export enum Provider {

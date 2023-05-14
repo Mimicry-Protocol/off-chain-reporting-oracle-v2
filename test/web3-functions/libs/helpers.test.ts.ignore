@@ -1,0 +1,15 @@
+import { expect } from "chai";
+import { test } from "mocha";
+import { BigNumber } from "ethers";
+import { isHeartbeatThresholdReached } from "../../../web3-functions/libs/helpers";
+
+describe("Check if we need to updateValues", function () {
+  test("Returns true if heartbeat is above threshold", async () => {
+    const heartbeatMet = isHeartbeatThresholdReached(
+      BigNumber.from(1684025315),
+      BigNumber.from(1684015315),
+      3600
+    );
+    expect(heartbeatMet).to.equal(true);
+  });
+});

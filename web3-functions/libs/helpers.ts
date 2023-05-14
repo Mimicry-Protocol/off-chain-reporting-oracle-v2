@@ -205,17 +205,12 @@ export function isDeviationThresholdReached(
   oldValue: BigNumber,
   deviationThreshold: number
 ): boolean {
-  const bigThreshold = BigNumber.from(deviationThreshold).mul(10 ** 14); // 2,500,000,000,000,000
-  const deviation = newValue.sub(oldValue).abs();
-  const bigDeviation = deviation.mul(10 ** 18);
-  const bigRatio = bigDeviation.div(oldValue);
-  const smallRatio: number = (bigRatio.toNumber() / 10 ** 18) * 100;
-
+  const deviation: BigNumber = newValue.sub(oldValue).abs();
+  const ratio: number = (deviation.toNumber() / oldValue.toNumber()) * 100;
   console.log(
-    `Value difference since latest update: ${deviation} (${smallRatio}%)`
+    `Value difference since latest update: ${deviation} (${ratio}%)`
   );
-
-  return bigRatio.gte(bigThreshold);
+  return ratio * 100 >= deviationThreshold;
 }
 
 /**

@@ -9,6 +9,9 @@ import "hardhat-deploy";
 
 // ================================= TASKS =========================================
 
+// Tasks
+import "./scripts/create-task-omoOracle";
+
 // Process Env Variables
 import * as dotenv from "dotenv";
 dotenv.config({ path: __dirname + "/.env" });
@@ -27,7 +30,7 @@ const ETHERSCAN_KEY = process.env.ETHERSCAN_KEY;
 const config: HardhatUserConfig = {
   w3f: {
     rootDir: "./web3-functions",
-    debug: false,
+    debug: true,
     networks: ["mumbai", "polygon"], //(multiChainProvider) injects provider for these networks
   },
 

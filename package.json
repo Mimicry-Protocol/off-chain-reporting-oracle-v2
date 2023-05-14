@@ -1,6 +1,6 @@
 {
   "name": "mimicry-off-chain-reporting-oracle",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Mimicry Off-Chain Reporting Oracle",
   "repository": "https://github.com/Mimicry-Protocol/off-chain-reporting-oracle-v2",
   "private": true,
@@ -16,7 +16,7 @@
     "lint:sol": "solhint contracts/**/*.sol --ignore-path node_modules",
     "test": "npx hardhat test",
     "verify": "npx hardhat etherscan-verify",
-    "create-task:omoOracle": "npx hardhat run ./scripts/create-task-omoOracle.ts"
+    "create-task:omoOracle": "npx hardhat createOmo"
   },
   "keywords": [
     "mimicry",
@@ -68,7 +68,7 @@
     "@gelatonetwork/automate-sdk": "^2.7.0-beta",
     "@gelatonetwork/web3-functions-sdk": "^2.0.3",
     "@redstone-finance/evm-connector": "^0.0.22",
-    "ky": "^0.33.2",
+    "ky": "^0.33.3",
     "p-throttle": "^5.1.0"
   }
 }

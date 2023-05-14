@@ -297,12 +297,19 @@ contract OpenMarketsOracle is Initializable, OwnableUpgradeable, UUPSUpgradeable
     function getDataFeedInfoByHash(
         bytes32 _rulesHash
     ) external view returns (DataFeedInfo memory) {
+        return getDataFeedInfoByHash(_rulesHash, msg.sender);
+    }
+
+    function getDataFeedInfoByHash(
+        bytes32 _rulesHash,
+        address _owner
+    ) public view returns (DataFeedInfo memory) {
         // loop through every data feed
         // if the owner and rulesHash match, return the data feed info
         // if no match, revert
         for (uint256 i = 1; i < nextDataFeedId; i++) {
             if (
-                dataFeeds[i].owner == msg.sender &&
+                dataFeeds[i].owner == _owner &&
                 dataFeeds[i].rulesHash == _rulesHash
             ) {
                 return getDataFeedInfo(i);

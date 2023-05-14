@@ -84,6 +84,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
     }
     console.log("All checks passed!");
 
+
     // STEP 4. CREATE A DATA FEED IF ONE DOESN'T EXIST ALREADY
     let dataFeedInfo: any;
     const hashArgs = { ...userArgs };

@@ -10,7 +10,7 @@ import "hardhat-deploy";
 // ================================= TASKS =========================================
 
 // Tasks
-import "./scripts/create-task-omoOracle";
+import "./scripts/create-task-mashup";
 
 // Process Env Variables
 import * as dotenv from "dotenv";

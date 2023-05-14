@@ -16,7 +16,7 @@
     "lint:sol": "solhint contracts/**/*.sol --ignore-path node_modules",
     "test": "npx hardhat test",
     "verify": "npx hardhat etherscan-verify",
-    "create-task:omoOracle": "npx hardhat createOmo"
+    "create-task:mashup": "npx hardhat create-mashup"
   },
   "keywords": [
     "mimicry",

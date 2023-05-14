@@ -1,9 +1,9 @@
 import { task } from "hardhat/config";
 import { AutomateSDK, Web3Function } from "@gelatonetwork/automate-sdk";
 import { OpenMarketsOracle } from "../typechain";
-import { version } from "../web3-functions/open-markets-oracle/index";
+import { version } from "../web3-functions/mashup/index";
 
-task("createOmo", "Create w3f task for OMO")
+task("create-mashup", "Create w3f task for Mimicry Mashup")
   .addParam("nickname", "The oracle's nickname")
   .addParam("deviation", "The minimum amount of change in prices between updates")
   .addParam("heartbeat", "The maximum amount of time between price updates")
@@ -18,7 +18,7 @@ task("createOmo", "Create w3f task for OMO")
     console.log(taskArgs);
 
     const oracle = <OpenMarketsOracle>await ethers.getContract("OpenMarketsOracle");
-    const oracleW3f = w3f.get("open-markets-oracle");
+    const oracleW3f = w3f.get("mashup");
 
     const [deployer] = await ethers.getSigners();
     const chainId = (await ethers.provider.getNetwork()).chainId;
@@ -35,7 +35,7 @@ task("createOmo", "Create w3f task for OMO")
     // // Create task using automate sdk
     // console.log("Creating automate task...");
     // const { taskId, tx } = await automate.createBatchExecTask({
-    //   name: "OMO v" + version + ": " + taskArgs.nickname,
+    //   name: "Mashup v" + version + ": " + taskArgs.nickname,
     //   web3FunctionHash: cid,
     //   web3FunctionArgs: {
     //     nickname: taskArgs.nickname,

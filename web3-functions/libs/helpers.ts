@@ -189,6 +189,47 @@ export function reachConsensus(
   return ConsensusMethods[method](values);
 }
 
+export function isHeartbeatThresholdReached(
+  currentTimestamp: BigNumber,
+  lastTimestamp: BigNumber,
+  heartbeatThreshold: number
+): boolean {
+  const timeDiffSeconds = currentTimestamp.sub(lastTimestamp).abs();
+  const timeDiffMinutes = timeDiffSeconds.div(60);
+  console.log(`Time since last update: ${timeDiffMinutes} minutes`);
+  return timeDiffSeconds.gte(heartbeatThreshold);
+}
+
+export function isDeviationThresholdReached(
+  newValue: BigNumber,
+  oldValue: BigNumber,
+  deviationThreshold: number
+): boolean {
+  const bigThreshold = BigNumber.from(deviationThreshold).mul(10 ** 14); // 2,500,000,000,000,000
+  const deviation = newValue.sub(oldValue).abs();
+  const bigDeviation = deviation.mul(10 ** 18);
+  const bigRatio = bigDeviation.div(oldValue);
+  const smallRatio: number = (bigRatio.toNumber() / 10 ** 18) * 100;
+
+  console.log(
+    `Value difference since latest update: ${deviation} (${smallRatio}%)`
+  );
+
+  return bigRatio.gte(bigThreshold);
+}
+
+/**
+ * Return the rulesHash for a list of rules
+ * @param rules A list of rules
+ * @returns string
+ */
+export function getRulesHash(userArgs: any): string {
+  const encodedData = getAbiEncodedParams(userArgs);
+  const rulesHash = getKeccak256Hash(encodedData);
+  // console.log(`Rules Hash: ${rulesHash}`);
+  return rulesHash;
+}
+
 /**
  * Return ABI Encoded schema params
  * @param userArgs A data object

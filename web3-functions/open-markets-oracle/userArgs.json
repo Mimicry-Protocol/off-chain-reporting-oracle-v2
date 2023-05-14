@@ -1,13 +1,11 @@
 {
-  "nftCollections": [
-    "ethereum-mainnet:0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
-  ],
-  "tokens": ["ethereum-mainnet:0x4d224452801aced8b2f0aebe155379bb5d594381"],
+  "nickname": "Remilio Babies",
+  "nftCollections": ["ethereum-mainnet:0xD3D9ddd0CF0A5F0BFB8f7fcEAe075DF687eAEBaB"],
+  "tokens": [""],
   "currency": "usd",
   "metric": "MarketCap",
-  "providers": ["NftGo", "CoinGecko"],
+  "providers": ["NftGo"],
   "consensusMechanism": "mad:mean",
   "deviation": 50,
-  "heartbeat": 3600,
-  "dataFeedId": 2
+  "heartbeat": 3600
 }

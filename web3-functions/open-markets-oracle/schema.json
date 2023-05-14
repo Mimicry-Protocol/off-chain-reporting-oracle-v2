@@ -4,7 +4,7 @@
   "memory": 128,
   "timeout": 30,
   "userArgs": {
-    "dataFeedId": "number",
+    "nickname": "string",
     "deviation": "number",
     "heartbeat": "number",
     "providers": "string[]",

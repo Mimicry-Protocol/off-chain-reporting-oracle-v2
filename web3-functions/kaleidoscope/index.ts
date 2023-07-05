@@ -70,7 +70,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
           {
             to: OpenMarketsOracleAddress.MUMBAI,
             data: oracle.interface.encodeFunctionData("createDataFeed", [
-              "kaleidoscope " + nickname + ": " + chain + "/" + address,
+              nickname + ": " + chain + "/" + address,
               rulesHash,
             ]),
           },
@@ -79,10 +79,8 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
     }
 
     // STEP 5. GET DATA FROM KALEIDOSCOPE API
-    const key = await context.secrets.get("KALEIDOSCOPE_KEY");
-    // https://api.kaleidoscope.mimicry.org/v1/collections/ethereum/0x4b15a9c28034dC83db40CD810001427d3BD7163D/floor
+    const key = await context.secrets.get("KALEIDOSCOPE_KEY") ?? "";
     const url = `https://api.kaleidoscope.mimicry.org/v1/collections/${chain}/${address}/floor`;
-
     let floorResponse: any;
     try {
         floorResponse = await ky.create({

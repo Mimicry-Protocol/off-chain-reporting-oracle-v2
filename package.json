@@ -16,7 +16,8 @@
     "lint:sol": "solhint contracts/**/*.sol --ignore-path node_modules",
     "test": "npx hardhat test",
     "verify": "npx hardhat etherscan-verify",
-    "create-task:mashup": "npx hardhat create-mashup"
+    "create-task:mashup": "npx hardhat create-mashup",
+    "create-task:kaleidoscope": "npx hardhat create-kaleidoscope"
   },
   "keywords": [
     "mimicry",

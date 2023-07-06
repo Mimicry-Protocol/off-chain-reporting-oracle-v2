@@ -51,7 +51,6 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
 
     console.log("All checks passed!");
 
-
     // STEP 4. CREATE A DATA FEED IF ONE DOESN'T ALREADY EXIST
     let dataFeedInfo: any;
     const hashArgs = { ...userArgs };
@@ -106,7 +105,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
     }
 
     // STEP 6. CAST THE RESPONSE TO A BIG NUMBER
-    const newValue = BigNumber.from(floorResponse.amount.atomic);
+    const newValue = BigNumber.from(floorResponse.amount.atomic.replace('n', ''));
     console.log(`New value: ${newValue}`);
 
     // STEP 7. CHECK FOR SUFFICIENT DEVIATION AND/OR TIMESTAMP

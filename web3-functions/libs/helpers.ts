@@ -206,11 +206,21 @@ export function isDeviationThresholdReached(
   deviationThreshold: number
 ): boolean {
   const deviation: BigNumber = newValue.sub(oldValue).abs();
-  const ratio: number = (deviation.toNumber() / oldValue.toNumber()) * 100;
-  console.log(
-    `Value difference since latest update: ${deviation} (${ratio}%)`
-  );
-  return ratio * 100 >= deviationThreshold;
+  console.log(`Absolute deviation: ${deviation.toString()}`);
+
+  // Convert the deviation threshold to a fraction, and multiply it by the old value
+  const threshold: ethers.BigNumber = oldValue.mul(deviationThreshold).div(10000);
+
+  console.log(`Threshold:          ${threshold.toString()}`);
+
+  // Compare the absolute deviation with the threshold
+  if (deviation.gte(threshold)) {
+    console.log('The deviation threshold has been reached.');
+    return true;
+  } else {
+    console.log('The deviation threshold has not been reached.');
+    return false;
+  }
 }
 
 /**

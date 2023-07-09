@@ -12,6 +12,7 @@ import "hardhat-deploy";
 // Tasks
 import "./scripts/create-task-mashup";
 import "./scripts/create-task-kaleidoscope";
+import "./scripts/create-task-omo-cloner";
 
 // Process Env Variables
 import * as dotenv from "dotenv";

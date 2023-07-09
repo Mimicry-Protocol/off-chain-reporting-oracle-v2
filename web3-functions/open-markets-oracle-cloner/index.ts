@@ -109,7 +109,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
                 }
             ]
         };
-    } catch (err) {
+    } catch (err: any) {
         console.log(err);
         return { canExec: false, message: err.message };
     }

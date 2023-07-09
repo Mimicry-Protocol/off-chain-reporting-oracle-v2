@@ -17,7 +17,8 @@
     "test": "npx hardhat test",
     "verify": "npx hardhat etherscan-verify",
     "create-task:mashup": "npx hardhat create-mashup",
-    "create-task:kaleidoscope": "npx hardhat create-kaleidoscope"
+    "create-task:kaleidoscope": "npx hardhat create-kaleidoscope",
+    "create-task:cloner": "npx hardhat create-omo-cloner"
   },
   "keywords": [
     "mimicry",

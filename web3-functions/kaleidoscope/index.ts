@@ -11,11 +11,6 @@ import {
 } from "@gelatonetwork/web3-functions-sdk";
 import { BigNumber } from "ethers";
 import {
-  unwrapConsensusMechanism,
-  unwrapContractPointers,
-  nftCollectionRunner,
-  tokenRunner,
-  reachConsensus,
   getRulesHash,
   isDeviationThresholdReached,
   isHeartbeatThresholdReached,
@@ -24,17 +19,16 @@ import { OpenMarketsOracle__factory } from "../../typechain";
 import { OpenMarketsOracleAddress } from "../libs/enums";
 import ky from "ky";
 
-
 Web3Function.onRun(async (context: Web3FunctionContext) => {
   try {
     const { userArgs, gelatoArgs, multiChainProvider } = context;
     console.log("Mimicry Kaleidoscope v" + version);
 
     // STEP 1. SETUP THE ORACLE
-    // @dev: We currently only support Mumbai
-    const provider = multiChainProvider.chainId(80001);
+    // @dev: We currently only support Polygon Mainnet
+    const provider = multiChainProvider.chainId(137);
     const oracle = OpenMarketsOracle__factory.connect(
-      OpenMarketsOracleAddress.MUMBAI,
+      OpenMarketsOracleAddress.POLYGON,
       provider
     );
     const nickname = (userArgs.nickname as string) ?? "";
@@ -61,13 +55,15 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
     try {
       dataFeedInfo = await oracle["getDataFeedInfoByHash(bytes32,address)"](rulesHash, authorizedSender);
     } catch (error: any) {
+      console.log(error);
+
       // If the data feed doesn't exist, create it
       console.log("Creating new data feed...");
       return {
         canExec: true,
         callData: [
           {
-            to: OpenMarketsOracleAddress.MUMBAI,
+            to: OpenMarketsOracleAddress.POLYGON,
             data: oracle.interface.encodeFunctionData("createDataFeed", [
               nickname + ": " + chain + "/" + address,
               rulesHash,
@@ -146,7 +142,7 @@ Web3Function.onRun(async (context: Web3FunctionContext) => {
       canExec: true,
       callData: [
         {
-          to: OpenMarketsOracleAddress.MUMBAI,
+          to: OpenMarketsOracleAddress.POLYGON,
           data: oracle.interface.encodeFunctionData("updateValue", [
             dataFeedInfo.id,
             newValue,

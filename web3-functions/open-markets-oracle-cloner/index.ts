@@ -13,9 +13,9 @@ import {
     Web3FunctionContext,
 } from "@gelatonetwork/web3-functions-sdk";
 import { BigNumber, Contract, ethers } from "ethers";
-import { OpenMarketsOracleAddress } from "../libs/enums"
-import { OpenMarketsOracle__factory } from "../../typechain"
-import { getRulesHash } from "../libs/helpers"
+import { OpenMarketsOracleAddress } from "../libs/enums";
+import { OpenMarketsOracle__factory } from "../../typechain";
+import { getRulesHash } from "../libs/helpers";
 
 Web3Function.onRun(async (context: Web3FunctionContext) => {
     try { 
